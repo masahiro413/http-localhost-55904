@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Tasks</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Simple ToDo</p>
+          <h1>My Tasks</h1>
+        </div>
+        <p id="task-count" class="task-count" aria-live="polite">0件</p>
+      </header>
+
+      <section class="panel" aria-labelledby="task-form-heading">
+        <h2 id="task-form-heading" class="visually-hidden">タスクを追加</h2>
+        <form id="task-form" class="task-form">
+          <label class="visually-hidden" for="task-input">新しいタスク</label>
+          <input
+            id="task-input"
+            name="task"
+            type="text"
+            maxlength="500"
+            placeholder="今日やることを入力"
+            autocomplete="off"
+          />
+          <button type="submit">追加</button>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="task-list-heading">
+        <div class="list-header">
+          <h2 id="task-list-heading">未完了タスク</h2>
+        </div>
+        <p id="empty-state" class="empty-state" aria-live="polite">
+          タスクはありません。今日やることを追加しましょう。
+        </p>
+        <ul id="task-list" class="task-list" aria-label="未完了タスク一覧"></ul>
+      </section>
+    </main>
+
+    <div id="undo-toast" class="undo-toast" aria-live="polite" hidden>
+      <span id="undo-message">タスクを完了しました。</span>
+      <button id="undo-button" type="button">元に戻す</button>
+    </div>
+  </body>
+</html>
