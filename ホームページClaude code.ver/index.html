@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Tasks</title>
+  <!-- 見た目は style.css に分離（関心の分離） -->
+  <link rel="stylesheet" href="style.css">
+  <!-- 振る舞いは app.js に分離。defer で HTML 解析後に実行 -->
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <!-- ヘッダー：アプリ名と未完了件数 -->
+    <header class="app-header">
+      <h1 class="app-title">My Tasks</h1>
+      <!-- 件数は app.js が書き換える -->
+      <span class="app-count" id="count" aria-live="polite">0 件</span>
+    </header>
+
+    <!-- 入力エリア：テキスト欄＋追加ボタン。form にして Enter 追加を自然に扱う -->
+    <form class="input-area" id="add-form">
+      <input
+        type="text"
+        id="new-task"
+        class="input-text"
+        placeholder="タスクを追加…"
+        autocomplete="off"
+        aria-label="新しいタスク">
+      <button type="submit" class="btn-add" aria-label="タスクを追加">追加</button>
+    </form>
+
+    <!-- タスクリスト：中身は app.js が描画する -->
+    <ul class="task-list" id="task-list"></ul>
+
+    <!-- 空状態：タスクが 0 件のときだけ表示（表示制御は app.js） -->
+    <p class="empty-state" id="empty-state" hidden>
+      タスクはありません。今日やることを追加しましょう。
+    </p>
+  </main>
+
+  <!-- Undo トースト：完了直後に数秒だけ表示（表示制御は app.js） -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast-text">タスクを完了しました</span>
+    <button type="button" class="toast-undo" id="undo-btn">元に戻す</button>
+  </div>
+</body>
+</html>

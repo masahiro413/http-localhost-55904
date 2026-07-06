@@ -1,0 +1,265 @@
+/* =========================================================
+   style.css — 見た目（カード型 UI・ライト/ダークテーマ）
+   色は CSS 変数（カスタムプロパティ）で定義し、
+   OS のテーマ設定（prefers-color-scheme）で値を切り替える。
+   ========================================================= */
+
+/* ---- テーマ変数：ライト（既定） ---- */
+:root {
+  --bg:        #faf8f5;  /* 背景（温かみのあるオフホワイト） */
+  --surface:   #ffffff;  /* カードの背景 */
+  --text:      #3a3532;  /* 本文の文字色 */
+  --muted:     #9b938c;  /* 補助的な文字（件数・プレースホルダ） */
+  --accent:    #e8846b;  /* アクセント（ボタンなど・親しみのあるコーラル） */
+  --accent-ink:#ffffff;  /* アクセント上の文字色 */
+  --border:    #ece7e1;  /* 枠線・区切り */
+  --danger:    #d9704f;  /* 削除など注意色 */
+  --shadow:    0 4px 14px rgba(60, 50, 45, 0.08); /* 柔らかい影 */
+}
+
+/* ---- テーマ変数：ダーク（OS がダークのとき自動適用） ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #1e1c1a;
+    --surface:   #2a2724;
+    --text:      #ece7e1;
+    --muted:     #8a827b;
+    --accent:    #f0a08c;
+    --accent-ink:#241a16;
+    --border:    #3a3633;
+    --danger:    #f0a08c;
+    --shadow:    0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* ---- ベース ---- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.6;
+}
+
+/* アプリ全体を中央寄せ・最大幅を設定 */
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 48px 20px 96px;
+}
+
+/* ---- ヘッダー ---- */
+.app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.app-count {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---- 入力エリア ---- */
+.input-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.input-text {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input-text::placeholder { color: var(--muted); }
+
+.input-text:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.btn-add {
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.05s;
+}
+
+.btn-add:hover  { filter: brightness(1.05); }
+.btn-add:active { transform: translateY(1px); }
+
+/* ---- タスクリスト（カード） ---- */
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  animation: pop-in 0.18s ease;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.99); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 完了ボタン（丸いチェック） */
+.task-check {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.task-check:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* チェックマーク（ホバー時にうっすら見せる） */
+.task-check::after {
+  content: "✓";
+  font-size: 14px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.task-check:hover::after { opacity: 1; }
+
+/* タスク本文（ダブルクリック/Enter で編集可能なことを示すカーソル） */
+.task-text {
+  flex: 1;
+  word-break: break-word;
+  cursor: text;
+  border-radius: 6px;
+}
+
+/* インライン編集中の入力欄：本文と見た目の連続性を保つ */
+.task-edit-input {
+  font: inherit;
+  color: inherit;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: -2px -6px; /* 周囲のレイアウトがずれないよう相殺 */
+  outline: none;
+}
+
+/* 削除ボタン */
+.task-delete {
+  flex-shrink: 0;
+  padding: 6px 8px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.task-delete:hover {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+/* キーボード操作時のフォーカス表示（アクセシビリティ） */
+.task-check:focus-visible,
+.task-delete:focus-visible,
+.btn-add:focus-visible,
+.toast-undo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- 空状態 ---- */
+.empty-state {
+  margin-top: 40px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* ---- Undo トースト ---- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px 12px 20px;
+  background: var(--text);           /* 背景とコントラストの効く色 */
+  color: var(--bg);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  animation: toast-in 0.2s ease;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.toast-text { font-size: 14px; }
+
+.toast-undo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+}
+
+.toast-undo:hover { text-decoration: underline; }
+
+/* hidden 属性のときは確実に隠す */
+[hidden] { display: none !important; }
